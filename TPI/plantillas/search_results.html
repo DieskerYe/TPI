@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block banner %}
+  <div id="index-banner">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <h2 class="header orange-text">Search results for:</h2>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+      <!--   Icon Section   -->
+      <div class="row">
+
+        {% for movie in movie_data.Search %}
+        <div class="col s12 m4">
+          <div class="card">
+            <div class="card-image">
+              <img src="{{ movie.Poster }}">
+            </div>
+            <div class="card-content">
+              <span class="card-title"><b>{{ movie.Title }}</b></span>
+              <span class="right"><i class="material-icons left">date_range</i>{{ movie.Year }}</span>
+              <p><b>{{ movie.Type }}</b></p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+
+      </div>
+      <div class="col s12 m12 center-align">
+        <a href="{% url 'pagination' query page_number %}" class="waves-effect waves-light btn"><i class="material-icons left">add</i>Cargar Mas</a>
+      </div>
+{% endblock %}
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
