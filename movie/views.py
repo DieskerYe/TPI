@@ -45,11 +45,11 @@ def pagination(request, query, page_number):
     return HttpResponse(template.render(context, request))
 
 def movieDetails(request, imdb_id):
-    if Movie.objects.filter(imdb_id=imdb_id).exists():
-        movie_data = Movie.objects.get(imdbid=imdb_id)
+    if Movie.objects.filter(imdbID=imdb_id).exists():
+        movie_data = Movie.objects.get(imdbID=imdb_id)
         db = True
     else:
-        url = 'http://www.omdbapi.com/?apikey=ff4e1a0f&s=' + imdb_id
+        url = 'http://www.omdbapi.com/?apikey=ff4e1a0f&i=' + imdb_id
         response = requests.get(url)
         movie_data = response.json()
 
@@ -63,7 +63,7 @@ def movieDetails(request, imdb_id):
         actor_list = [i.strip() for i in movie_data['Actors'].split(',')]
 
         for actor in actor_list:
-            a, created = Actor.objects.get_or_create(name=actor)
+            a, created = Actor.objects.get_or_create(Name=actor)
             actor_objs.append(a)
 
         #For the Genre or categories
@@ -71,60 +71,60 @@ def movieDetails(request, imdb_id):
 
         for genre in genre_list:
             genre_slug = slugify(genre)
-            g, created = Genre.objects.get_or_create(title=genre, slug=genre_slug)
+            g, created = Genre.objects.get_or_create(Title=genre, Slug=genre_slug)
             genre_objs.append(g)
 
         #For the rate
         for rate in movie_data['Ratings']:
-            r, created = Rating.objects.get_or_create(source=rate['Source'], rating=rate['Value'])
+            r, created = Rating.objects.get_or_create(Source=rate['Source'], Rating=rate['Value'])
             rating_objs.append(r)
 
         if movie_data['Type'] == 'movie':
             m, created = Movie.objects.get_or_create(
-                title=movie_data['Title'],
-                year=movie_data['Year'],
-                rated=movie_data['Rated'],
-                released=movie_data['Released'],
-                runtime=movie_data['Runtime'],
-                director=movie_data['Director'],
-                writer=movie_data['Writer'],
-                plot=movie_data['Plot'],
-                language=movie_data['Language'],
-                country=movie_data['Country'],
-                awards=movie_data['Awards'],
-                poster_url=movie_data['Poster'],
-                metascore=movie_data['Metascore'],
-                imdb_rating=movie_data['imdbRating'],
-                imdb_votes=movie_data['imdbVotes'],
-                imdb_id=movie_data['imdbID'],
-                type=movie_data['Type'],
-                dvd=movie_data['DVD'],
-                box_office=movie_data['BoxOffice'],
-                production=movie_data['Production'],
-                website=movie_data['Website'],
+                Title=movie_data['Title'],
+                Year=movie_data['Year'],
+                Rated=movie_data['Rated'],
+                Released=movie_data['Released'],
+                Runtime=movie_data['Runtime'],
+                Director=movie_data['Director'],
+                Writer=movie_data['Writer'],
+                Plot=movie_data['Plot'],
+                Language=movie_data['Language'],
+                Country=movie_data['Country'],
+                Awards=movie_data['Awards'],
+                Poster_url=movie_data['Poster'],
+                Metascore=movie_data['Metascore'],
+                imdbRating=movie_data['imdbRating'],
+                imdbVotes=movie_data['imdbVotes'],
+                imdbID=movie_data['imdbID'],
+                Type=movie_data['Type'],
+                DVD=movie_data['DVD'],
+                BoxOffice=movie_data['BoxOffice'],
+                Production=movie_data['Production'],
+                Website=movie_data['Website'],
             )
             m.Genre.set(genre_objs)
             m.Actors.set(actor_objs)
             m.Ratings.set(rating_objs)
         else:
             m, created = Movie.objects.get_or_create(
-                title=movie_data['Title'],
-                year=movie_data['Year'],
-                rated=movie_data['Rated'],
-                released=movie_data['Released'],
-                runtime=movie_data['Runtime'],
-                director=movie_data['Director'],
-                writer=movie_data['Writer'],
-                plot=movie_data['Plot'],
-                language=movie_data['Language'],
-                country=movie_data['Country'],
-                awards=movie_data['Awards'],
-                poster_url=movie_data['Poster'],
-                metascore=movie_data['Metascore'],
-                imdb_rating=movie_data['imdbRating'],
-                imdb_votes=movie_data['imdbVotes'],
-                imdb_id=movie_data['imdbID'],
-                type=movie_data['Type'],
+                Title=movie_data['Title'],
+                Year=movie_data['Year'],
+                Rated=movie_data['Rated'],
+                Released=movie_data['Released'],
+                Runtime=movie_data['Runtime'],
+                Director=movie_data['Director'],
+                Writer=movie_data['Writer'],
+                Plot=movie_data['Plot'],
+                Language=movie_data['Language'],
+                Country=movie_data['Country'],
+                Awards=movie_data['Awards'],
+                Poster_url=movie_data['Poster'],
+                Metascore=movie_data['Metascore'],
+                imdbRating=movie_data['imdbRating'],
+                imdbVotes=movie_data['imdbVotes'],
+                imdbID=movie_data['imdbID'],
+                Type=movie_data['Type'],
                 totalSeasons=movie_data['totalSeasons'],
             )
             m.Genre.set(genre_objs)
@@ -132,7 +132,7 @@ def movieDetails(request, imdb_id):
             m.Ratings.set(rating_objs)
 
         for actor in actor_objs:
-            actor.movies.add(m)
+            actor.Movies.add(m)
             actor.save()
 
         m.save()
