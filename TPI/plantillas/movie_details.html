@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
       <!--   Icon Section   -->
       <div class="row">
@@ -10,7 +9,8 @@
             <div class="card-image">
 
               {% if db is True %}
-                <img src="{{ movie_data.Poster.url }}">              {% else %}
+                <img src="{{ movie_data.Poster.url }}">
+              {% else %}
                 <img src="{{ movie_data.Poster }}">
               {% endif %}
 
@@ -30,10 +30,8 @@
 
                 {% if db is True %}
                   <p>Genre: {% for genre in movie_data.Genre.all %}
-                    <b>
-                    {{ genre }}
-                    </b>
-                  </p> {% endfor %}
+                    <a href="{{ genre.get_absolute_url }}"><b>{{ genre }}, </b></a> {% endfor %}
+                  </p>
                 {% else %}
                   <p>Genre: <b>{{ movie_data.Genre }}</b></p>
                 {% endif %}
@@ -45,8 +43,8 @@
                   <p>Actors: {% for actor in movie_data.Actors.all %}
                     <b>
                     {{ actor }}
-                    </b>
-                  </p> {% endfor %}
+                    </b> {% endfor %}
+                  </p>
                 {% else %}
                   <p>Actors: <b>{{ movie_data.Actors }}</b></p>
                 {% endif %}

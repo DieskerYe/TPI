@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core import files
+from django.urls import reverse
 from actor.models import Actor
 import requests
 from io import BytesIO
@@ -10,15 +11,18 @@ from io import BytesIO
 
 class Genre(models.Model):
     Title = models.CharField(max_length=25)
-    Slug = models.SlugField(null=False, unique=True)
+    slug = models.SlugField(null=False, unique=True)
+
+    def get_absolute_url(self):
+        return reverse('genres', args=[self.slug])
 
     def __str__(self):
         return self.Title
 
     def save(self, *args, **kwargs):
-        if not self.Slug:
+        if not self.slug:
             self.Title.replace('', '')
-            self.Slug = slugify(self.Title)
+            self.slug = slugify(self.Title)
         return super().save(*args, **kwargs)
 
 

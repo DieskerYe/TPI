@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.utils.text import slugify
+from django.core.paginator import Paginator
 from movie.models import Movie, Genre, Rating
 from actor.models import Actor
 import requests
@@ -44,10 +45,16 @@ def pagination(request, query, page_number):
 
     return HttpResponse(template.render(context, request))
 
+
 def movieDetails(request, imdb_id):
     if Movie.objects.filter(imdbID=imdb_id).exists():
         movie_data = Movie.objects.get(imdbID=imdb_id)
         db = True
+
+        context = {
+            'movie_data': movie_data,
+            'db': db
+        }
     else:
         url = 'http://www.omdbapi.com/?apikey=ff4e1a0f&i=' + imdb_id
         response = requests.get(url)
@@ -71,7 +78,7 @@ def movieDetails(request, imdb_id):
 
         for genre in genre_list:
             genre_slug = slugify(genre)
-            g, created = Genre.objects.get_or_create(Title=genre, Slug=genre_slug)
+            g, created = Genre.objects.get_or_create(Title=genre, slug=genre_slug)
             genre_objs.append(g)
 
         #For the rate
@@ -138,11 +145,30 @@ def movieDetails(request, imdb_id):
         m.save()
         db = False
 
-    context = {
-        'movie_data': movie_data,
-        'db': db
-    }
+        context = {
+            'movie_data': movie_data,
+            'db': db
+        }
 
     template = loader.get_template('movie_details.html')
+
+    return HttpResponse(template.render(context, request))
+
+
+def genres(request, genre_slug):
+    genre = get_object_or_404(Genre, slug=genre_slug)
+    movies = Movie.objects.filter(Genre=genre)
+
+    #Paginator
+    paginator = Paginator(movies, 9)
+    page_number = request.GET.get('page')
+    movie_data = paginator.get_page(page_number)
+
+    context = {
+        'movie_data': movie_data,
+        'genre': genre
+    }
+
+    template = loader.get_template('genre.html')
 
     return HttpResponse(template.render(context, request))
