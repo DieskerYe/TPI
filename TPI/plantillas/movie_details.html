@@ -9,32 +9,51 @@
           <div class="card horizontal">
             <div class="card-image">
 
-              {% if our_db is True %}
-                <img src="{{ movie_data.Poster.url }}">
-              {% else %}
+              {% if db is True %}
+                <img src="{{ movie_data.Poster.url }}">              {% else %}
                 <img src="{{ movie_data.Poster }}">
               {% endif %}
 
             </div>
             <div class="card-stacked">
               <div class="card-content">
-                <span class="card-title"><b>movie</b></span>
-                <span>description</span>
+                <span class="card-title"><b>{{ movie_data.Title }}</b></span>
+                <span>{{ movie_data.Type }}</span>
                 <br>
-                <p>PLOT DE LA PELI</p>
+                <p>{{ movie_data.Plot }}</p>
                 <br>
                 <div class="divider"></div>
-                <span>Year: <b>2014</b></span>
-                <span class="right">Rated: <b>PG-13</b></span>
-                <p>Released: <b>Nov 2015</b></p>
-                <p>Runtime: <b>150 min</b></p>
-                <p>Genre: <b>Adventure, Drama</b></p>
-                <p>Director: <b>Steven Spielberg</b></p>
-                <p>Writer: <b>Jose</b></p>
-                <p>Actors: <b>Javier</b></p>
-                <p>Language: <b>English</b></p>
-                <p>Country: <b>USA</b></p>
-                <p>Awards: <b>Won 5 oscars</b></p>
+                <span>Year: <b>{{ movie_data.Year }}</b></span>
+                <span class="right">Rated: <b>{{ movie_data.Rated }}</b></span>
+                <p>Released: <b>{{ movie_data.Released }}</b></p>
+                <p>Runtime: <b>{{ movie_data.Runtime }}</b></p>
+
+                {% if db is True %}
+                  <p>Genre: {% for genre in movie_data.Genre.all %}
+                    <b>
+                    {{ genre }}
+                    </b>
+                  </p> {% endfor %}
+                {% else %}
+                  <p>Genre: <b>{{ movie_data.Genre }}</b></p>
+                {% endif %}
+
+                <p>Director: <b>{{ movie_data.Director }}</b></p>
+                <p>Writer: <b>{{ movie_data.Writer }}</b></p>
+
+                {% if db is True %}
+                  <p>Actors: {% for actor in movie_data.Actors.all %}
+                    <b>
+                    {{ actor }}
+                    </b>
+                  </p> {% endfor %}
+                {% else %}
+                  <p>Actors: <b>{{ movie_data.Actors }}</b></p>
+                {% endif %}
+
+                <p>Language: <b>{{ movie_data.Language }}</b></p>
+                <p>Country: <b>{{ movie_data.Country }}</b></p>
+                <p>Awards: <b>{{ movie_data.Awards }}</b></p>
                 <div class="divider"></div>
                 <ul class="collection">
                   <li class="collection-item avatar">
@@ -42,28 +61,58 @@
                     <p><b>8 / 10 - Very good</b> by <b>100</b> people</p>
                     <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
                   </li>
-                  <li class="collection-item avatar">
-                    <img src="img/icons/imdb_icon.png" alt="" class="circle">
-                    <span class="title">IMDB Rating</span>
-                    <p><b>9.3 / 10</b></p>
-                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                  </li>
-                  <li class="collection-item avatar">
-                    <img src="img/icons/rt_icon.png" alt="" class="circle">
-                    <span class="title">Rotten Tomatoes Rating</span>
-                    <p><b>78%</b></p>
-                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                  </li>
-                  <li class="collection-item avatar">
-                    <img src="img/icons/meta_icon.png" alt="" class="circle">
-                    <span class="title">Metacritic</span>
-                    <p><b>86 / 100</b></p>
-                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                  </li>
+                  {% if db is True %}
+                  {% for movie in movie_data.Ratings.all %}
+
+                    {% if movie.Source == 'Internet Movie Database' %}
+                      <li class="collection-item avatar">
+                        <img src="{% static 'img/icons/imdb_icon.png' %}" alt="" class="circle">
+                        <span class="title">{{ movie.Source }}</span>
+                        <p><b>{{ movie.Rating }}</b></p>
+                        <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                      </li>
+                    {% elif movie.Source == 'Rotten Tomatoes' %}
+                      <li class="collection-item avatar">
+                        <img src="{% static 'img/icons/rt_icon.png' %}" alt="" class="circle">
+                        <span class="title">{{ movie.Source }}</span>
+                        <p><b>{{ movie.Rating }}</b></p>
+                        <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                      </li>
+                    {% elif movie.Source == 'Metacritic' %}
+                      <li class="collection-item avatar">
+                        <img src=" {% static 'img/icons/meta_icon.png' %}" alt="" class="circle">
+                        <span class="title">{{ movie.Source }}</span>
+                        <p><b>{{ movie.Rating }}</b></p>
+                        <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+
+                  {% else %}
+                    <li class="collection-item avatar">
+                      <img src="{% static 'img/icons/imdb_icon.png' %}" alt="" class="circle">
+                      <span class="title">{{ movie_data.Ratings.0.Source }}</span>
+                      <p><b>{{ movie_data.Ratings.0.Value }}</b></p>
+                      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                    </li>
+                    <li class="collection-item avatar">
+                      <img src="{% static 'img/icons/rt_icon.png' %}" alt="" class="circle">
+                      <span class="title">{{ movie_data.Ratings.1.Source }}</span>
+                      <p><b>{{ movie_data.Ratings.1.Value }}</b></p>
+                      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                    </li>
+                    <li class="collection-item avatar">
+                      <img src=" {% static 'img/icons/meta_icon.png' %}" alt="" class="circle">
+                      <span class="title">{{ movie_data.Ratings.2.Source }}</span>
+                      <p><b>{{ movie_data.Ratings.2.Value }}</b></p>
+                      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                    </li>
+                  {% endif %}
+
                   <div class="divider"></div>
-                  <p>Box Office: <b>$150,330.441</b></p>
-                  <p>IMDB Votes: <b>100</b></p>
-                  <p>Production: <b>Paramount Pictures</b></p>
+                  <p>Box Office: <b>{{ movie_data.BoxOffice }}</b></p>
+                  <p>IMDB Votes: <b>{{ movie_data.imdbVotes }}</b></p>
+                  <p>Production: <b>{{ movie_data.Production }}</b></p>
                   <a class="waves-effect waves-light btn"><i class="material-icons left">star</i>Rate</a>
                   <a class="waves-effect waves-light btn"><i class="material-icons left">playlist_add</i>Watchlist</a>
                   <a class="waves-effect waves-light btn"><i class="material-icons left">playlist_add_checked</i>Watched</a>
