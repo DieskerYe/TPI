@@ -31,12 +31,14 @@ def UsuarioUnico(value):
 class SignupForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(), max_length=30, required=True)
     email = forms.CharField(widget=forms.EmailInput(), max_length=100, required=True)
+    first_name = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
+    last_name = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput(), required=True, label='Ingrese la contraseña nuevamente')
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password')
 
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
@@ -82,14 +84,14 @@ class ChangePasswordForm(forms.ModelForm):
 
 class EditProfileForm(forms.ModelForm):
     picture = forms.ImageField(required=False)
-    nombre = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
-    apellido = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
-    lugar = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
-    informacion = forms.CharField(widget=forms.TextInput(), max_length=150, required=False)
+    first_name = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
+    last_name = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
+    location = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
+    info = forms.CharField(widget=forms.TextInput(), max_length=150, required=False)
 
     class Meta:
         model = Profile
-        fields = ('picture', 'nombre', 'apellido', 'lugar', 'informacion')
+        fields = ('picture', 'first_name', 'last_name', 'location', 'info')
 
 
 
