@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
@@ -5,7 +6,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.core.paginator import Paginator
 
-from movie.models import Movie, Genre, Rating
+from movie.models import Movie, Genre, Rating, Review
 from movie.forms import RateForm
 from actor.models import Actor
 from authy.models import Profile
@@ -54,10 +55,16 @@ def pagination(request, query, page_number):
 def movieDetails(request, imdb_id):
     if Movie.objects.filter(imdbID=imdb_id).exists():
         movie_data = Movie.objects.get(imdbID=imdb_id)
+        reviews = Review.objects.filter(movie=movie_data)
+        reviews_avg = reviews.aggregate(Avg('rate'))
+        reviews_count = reviews.count()
         db = True
 
         context = {
             'movie_data': movie_data,
+            'reviews': reviews,
+            'reviews_avg': reviews_avg,
+            'reviews_count': reviews_count,
             'db': db
         }
     else:
@@ -225,5 +232,6 @@ def Rate(request, imdb_id):
     }
 
     return HttpResponse(template.render(context, request))
+
 
 

@@ -11,22 +11,29 @@
             </div>
             <div class="card-stacked">
               <div class="card-content">
-                <span class="card-title"><b>movie</b></span>
-                <span>description</span>
+                <span class="card-title"><b>{{ movie.Title}}</b></span>
+                <span>{{ movie.Type }}</span>
                 <br>
-                <p>PLOT DE LA PELI</p>
+                <p>{{ movie.Plot }}</p>
                 <br>
                 <div class="divider"></div>
                 <div class="col s12 m12">
                   <div class="card-panel grey lighten-5 z-depth-1">
                     <div class="row valign-wrapper">
                       <div class="col s4 center-align">
-                        <img src="img/no_avatar.jpg" alt="" class="circle responsive-img">
-                        <span>coyero</span>
+                        {% if review.user.profile.picture %}
+                          <img src="{{ review.user.profile.picture.url }}" alt="" class="circle responsive-img">
+                        {% else %}
+                          <img src="{% static 'img/no_avatar.jpg' %}" alt="" class="circle responsive-img">
+                        {% endif %}
+                        <br>
+                        <br>
+                        <span class="title"><b>{{ review.user.first_name }} {{ review.user.last_name }}</b></span>
+                        <span>@{{ review.user.username }}</span>
                       </div>
                       <div class="col s8">
-                        <h5>Rated this movie:</h5>
-                        <h5>10 / 10</h5>
+                        <h5>Le dio a esta pelicula:</h5>
+                        <h5>{{ review.rate}} / 10</h5>
                       </div>
                     </div>
                   </div>
@@ -36,17 +43,17 @@
           </div>
         </div>
       </div>
-      <h4>Reviews:</h4>
+      <h4>Reseña:</h4>
       <div class="divider"></div>
       <div class="row">
         <div class="col s12 m12">
           <div class="card">
             <div class="card-content">
-              <span class="card-title"><b>Coyero</b></span><span class="right">Review<i class="material-icons right">rate_review</i></span>
-              <p>@coyero</p>
-              <p><b>24 septiembre 2023</b></p>
+              <span class="card-title"><b>{{ review.user.first_name }} {{ review.user.last_name }}</b></span><span class="right">Review<i class="material-icons right">rate_review</i></span>
+              <p>@{{ review.user.username }}</p>
+              <p><b>{{ review.date }}</b></p>
               <br>
-              <p>lorem</p>
+              <p>{{ review.text }}</p>
               <div class="card-action">
                 <a href="#"><i class="material-icons">thumb_up</i>100</a>
                 <a href="#"><i class="material-icons">thumb_down</i>100</a>
