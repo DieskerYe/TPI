@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.urls import reverse
 from django.utils.text import slugify
 from django.core.paginator import Paginator
 from movie.models import Movie, Genre, Rating
 from actor.models import Actor
+from authy.models import Profile
+from django.contrib.auth.models import User
 import requests
 
 
@@ -172,3 +175,26 @@ def genres(request, genre_slug):
     template = loader.get_template('genre.html')
 
     return HttpResponse(template.render(context, request))
+
+
+def addMoviesToWatch(request, imdb_id):
+    movie = Movie.objects.get(imdbID=imdb_id)
+    user = request.user
+    profile = Profile.objects.get(user=user)
+
+    profile.to_watch.add(movie)
+
+    return HttpResponseRedirect(reverse('movie-details', args=[imdb_id]))
+
+
+def addMoviesWatched(request, imdb_id):
+    movie = Movie.objects.get(imdbID=imdb_id)
+    user = request.user
+    profile = Profile.objects.get(user=user)
+
+    if profile.to_watch.filter(imdbID=imdb_id):
+        profile.to_watch.remove(movie)
+
+    profile.watched.add(movie)
+
+    return HttpResponseRedirect(reverse('movie-details', args=[imdb_id]))
