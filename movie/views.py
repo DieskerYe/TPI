@@ -4,7 +4,9 @@ from django.template import loader
 from django.urls import reverse
 from django.utils.text import slugify
 from django.core.paginator import Paginator
+
 from movie.models import Movie, Genre, Rating
+from movie.forms import RateForm
 from actor.models import Actor
 from authy.models import Profile
 from django.contrib.auth.models import User
@@ -198,3 +200,30 @@ def addMoviesWatched(request, imdb_id):
     profile.watched.add(movie)
 
     return HttpResponseRedirect(reverse('movie-details', args=[imdb_id]))
+
+
+def Rate(request, imdb_id):
+    movie = Movie.objects.get(imdbID=imdb_id)
+    user = request.user
+
+    if request.method == 'POST':
+        form = RateForm(request.POST)
+        if form.is_valid():
+            rate = form.save(commit=False)
+            rate.user = user
+            rate.movie = movie
+            rate.save()
+            return HttpResponseRedirect(reverse('movie-details', args=[imdb_id]))
+    else:
+        form = RateForm()
+
+    template = loader.get_template('rate.html')
+
+    context = {
+        'form': form,
+        'movie': movie
+    }
+
+    return HttpResponse(template.render(context, request))
+
+

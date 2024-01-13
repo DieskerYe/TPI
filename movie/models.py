@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
 from django.core import files
@@ -74,3 +75,30 @@ class Movie(models.Model):
             file_name = self.Poster_url.split("/")[-1]
             self.Poster.save(file_name, files.File(pb), save=False)
         return super().save(*args, **kwargs)
+
+
+RATE_OPCIONES = [
+    (1, '1- Basura'),
+    (2, '2- Horrible'),
+    (3, '3- Terrible'),
+    (4, '4- Mala'),
+    (5, '5- OK'),
+    (6, '6- Mirable'),
+    (7, '7- Buena'),
+    (8, '8- Muy buena'),
+    (9, '9- Casi perfecta'),
+    (10, '10- Obra maestra')
+]
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    text = models.TextField(max_length=3000, blank=True)
+    rate = models.PositiveSmallIntegerField(choices=RATE_OPCIONES)
+    likes = models.PositiveIntegerField(default=0)
+    unlikes = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.user.username
