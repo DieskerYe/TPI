@@ -98,7 +98,13 @@ class Review(models.Model):
     text = models.TextField(max_length=3000, blank=True)
     rate = models.PositiveSmallIntegerField(choices=RATE_OPCIONES)
     likes = models.PositiveIntegerField(default=0)
-    unlikes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.user.username
+
+
+class Likes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_like')
+    type_like = models.PositiveSmallIntegerField()
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='review_like')

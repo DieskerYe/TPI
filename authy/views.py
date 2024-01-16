@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from authy.forms import SignupForm, ChangePasswordForm, EditProfileForm
 from authy.models import Profile
-from movie.models import Movie, Review
+from movie.models import Movie, Review, Likes
 from comment.models import Comment
 from comment.forms import CommentForm
 
@@ -130,3 +130,45 @@ def ReviewDetail(request, username, imdb_id):
     template = loader.get_template('movie_review.html')
 
     return HttpResponse(template.render(context, request))
+
+
+def Like(request, username, imdb_id):
+    user_liking = request.user
+    user_review = get_object_or_404(User, username=username)
+    movie = Movie.objects.get(imdbID=imdb_id)
+    review = Review.objects.get(user=user_review, movie=movie)
+    current_likes = review.likes
+    liked = Likes.objects.filter(user=user_liking, review=review, type_like=2).count()
+
+    if not liked:
+        like = Likes.objects.create(user=user_liking, review=review, type_like=2)
+        current_likes += 1
+    else:
+        Likes.objects.filter(user=user_liking, review=review, type_like=2).delete()
+        current_likes -= 1
+
+    review.likes = current_likes
+    review.save()
+
+    return HttpResponseRedirect(reverse('user-review', args=[username, imdb_id]))
+
+
+def Dislike(request, username, imdb_id):
+    user_disliking = request.user
+    user_review = get_object_or_404(User, username=username)
+    movie = Movie.objects.get(imdbID=imdb_id)
+    review = Review.objects.get(user=user_review, movie=movie)
+    current_dislikes = review.dislikes
+    disliked = Likes.objects.filter(user=user_disliking, review=review, type_like=1).count()
+
+    if not disliked:
+        like = Likes.objects.create(user=user_disliking, review=review, type_like=1)
+        current_dislikes += 1
+    else:
+        Likes.objects.filter(user=user_disliking, review=review, type_like=1).delete()
+        current_dislikes -= 1
+
+    review.dislikes = current_dislikes
+    review.save()
+
+    return HttpResponseRedirect(reverse('user-review', args=[username, imdb_id]))

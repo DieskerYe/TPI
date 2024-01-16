@@ -55,8 +55,8 @@
               <br>
               <p>{{ review.text }}</p>
               <div class="card-action">
-                <a href="#"><i class="material-icons">thumb_up</i>100</a>
-                <a href="#"><i class="material-icons">thumb_down</i>100</a>
+                <a href="{% url 'user-review-like' review.user.username movie.imdbID %}"><i class="material-icons">thumb_up</i>{{ review.likes }}</a>
+                <a href="{% url 'user-review-dislike' review.user.username movie.imdbID %}"><i class="material-icons">thumb_down</i>{{ review.dislikes }}</a>
               </div>
             </div>
           </div>
