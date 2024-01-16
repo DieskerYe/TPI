@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from authy.views import UserProfile, ReviewDetail, Like, Dislike
+from authy.views import UserProfile, ReviewDetail, Like, Dislike, UserProfileMoviesWatched, UserProfileSeriesWatched, \
+    UserProfileWatchlist, UserProfileMoviesReviewed
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +27,10 @@ urlpatterns = [
     path('actors/', include('actor.urls')),
     path('account/', include('authy.urls')),
     path('<username>/', UserProfile, name='profile'),
+    path('<username>/movieswatched', UserProfileMoviesWatched, name='profile-movies-watched'),
+    path('<username>/serieswatched', UserProfileSeriesWatched, name='profile-series-watched'),
+    path('<username>/watchlist', UserProfileWatchlist, name='profile-watchlist'),
+    path('<username>/reviewed', UserProfileMoviesReviewed, name='profile-reviewed-list'),
     path('<username>/review/<imdb_id>', ReviewDetail, name='user-review'),
     path('<username>/review/<imdb_id>/like', Like, name='user-review-like'),
     path('<username>/review/<imdb_id>/unlike', Dislike, name='user-review-dislike')
