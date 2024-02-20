@@ -6,13 +6,13 @@
     <div class="section no-pad-bot">
       <div class="container">
         <br><br>
-        <h1 class="header center white-text">Encuentra la pelicula que desees</h1>
+        <h1 class="header center white-text">Encuentra la pelicula que desees, aquí</h1>
         <div class="row">
           <form class="col s12">
             <div class="row center">
               <div class="input-field col s12">
-                <textarea type="submit" id="textarea1" name="q" value="{{ request.GET.q }}" class="materialize-textarea"></textarea>
-                <label for="textarea1">Textarea</label>
+                <input type="text" id="textarea1" name="q" value="{{ request.GET.q }}" class="materialize-textarea">
+                <label for="textarea1">Título</label>
               </div>
               <button type="submit" name="action" class="waves-effect red darken-4 btn"><i class="material-icons left">search</i>Buscar</button>
             </div>
@@ -21,7 +21,7 @@
         <br><br>
       </div>
     </div>
-    <div class="parallax"><img src="{% static 'img\fondo_principal.jpg' %}" alt="Unsplashed background img 1"></div>
+    <div class="parallax"><img src="https://wallpapers.com/images/hd/black-and-white-movie-1920-x-1080-wallpaper-vdy8ro9ojjodjlta.jpg" alt="Unsplashed background img 1"></div>
   </div>
 {% endblock %}
 
